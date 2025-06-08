@@ -1,37 +1,34 @@
 package it.uniroma3.diadia.comandi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.util.Scanner;
 
-class FabbricaDiComandiFisarmonicaTest {
+import org.junit.Test;
 
-
-	FabbricaDiComandiFisarmonica factory;
+import it.uniroma3.diadia.IO;
+import it.uniroma3.diadia.IOConsole;
+/*verifica il corretto riconoscimento dei comandi*/
+public class FabbricaDiComandiFisarmonicaTest {
 	
-	@BeforeEach
-	void setUp() throws Exception {
-		factory = new FabbricaDiComandiFisarmonica();
-	}
-
-	@Test
-	void testComandoVai() {
-		Comando comando = factory.costruisciComando("vai sud");
-		assertEquals("sud", comando.getParametro());
-	}
+	Scanner scannerDiLinee;
+	private IO io = new IOConsole(scannerDiLinee);
+	private FabbricaDiComandiFisarmonica fc = new FabbricaDiComandiFisarmonica(io);
+	private Comando expected;
 	
 	@Test
-	void testComandoPrendi() {
-		Comando comando = factory.costruisciComando("prendi osso");
-		assertEquals("osso", comando.getParametro());
+	public void testComandoNonValido() {
+		expected = new ComandoNonValido();
+		assertEquals(expected.getNome(), fc.costruisciComando("pluto").getNome());
 	}
 	
 	@Test
-	void testComandoNonValido() {
-		Comando comando = factory.costruisciComando("ippogrifo");
-		assertTrue(comando instanceof ComandoNonValido);
+	public void testComandoConParametro() {
+		expected = new ComandoVai();
+		expected.setParametro("sud");
+		Comando current = fc.costruisciComando("vai sud");
+		assertEquals(expected.getNome(), current.getNome());
+		assertEquals(expected.getParametro(), current.getParametro());
 	}
 
 }

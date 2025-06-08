@@ -1,45 +1,55 @@
 package it.uniroma3.diadia.giocatore;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
 
 import it.uniroma3.diadia.attrezzi.Attrezzo;
+public class BorsaTest {
 
-class BorsaTest {
-	Giocatore giocatore;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		this.giocatore = new Giocatore();
-	}
-
+	private Attrezzo attrezzo = new Attrezzo("martello", 3);
+	private Borsa borsa = new Borsa();
+	
 	@Test
-	void testAggiungiTreAttrezzi() {
-		Attrezzo a1 = new Attrezzo("osso", 1);
-		Attrezzo a2 = new Attrezzo("penna", 5);
-		Attrezzo a3 = new Attrezzo("matita", 2);
-		
-		this.giocatore.getBorsa().addAttrezzo(a1);
-		this.giocatore.getBorsa().addAttrezzo(a3);
-		this.giocatore.getBorsa().addAttrezzo(a2);
-		
-		assertEquals(a1.getNome(), this.giocatore.getBorsa().getAttrezzo("osso").getNome());	
-		assertEquals(a2.getNome(), this.giocatore.getBorsa().getAttrezzo("penna").getNome());	
-		assertEquals(a3.getNome(), this.giocatore.getBorsa().getAttrezzo("matita").getNome());	
+	 public void testIsEmpty() {
+		assertTrue(borsa.isEmpty());
 	}
 	
 	@Test
-	public void testRimuoviUnAttrezzo() {
-		Attrezzo tappo = new Attrezzo("tappo", 2);
-		
-		this.giocatore.getBorsa().addAttrezzo(tappo);
-		assertEquals(tappo.getNome(), this.giocatore.getBorsa().getAttrezzo("tappo").getNome());
-		
-		this.giocatore.getBorsa().removeAttrezzo("tappo");
-		assertNull(this.giocatore.getBorsa().getAttrezzo("tappo"));
+	public void  testGetAttrezzo() {
+		borsa.addAttrezzo(attrezzo);
+		assertEquals(attrezzo, borsa.getAttrezzo("martello"));
 	}
+	
 
+	@Test
+	public void testAddAttrezzo() {
+		borsa.addAttrezzo(attrezzo);
+		assertTrue(borsa.hasAttrezzo("martello"));
+	}
+	
+	@Test
+	public void testRemoveAttrezzo() {
+		borsa.addAttrezzo(attrezzo);
+		borsa.removeAttrezzo("martello");
+		assertFalse(borsa.hasAttrezzo("martello"));
+	}
+	
+	@Test
+	public void testAttrezziNomeDiversoStessoPeso() {
+		Attrezzo attrezzo2 = new Attrezzo("cuffie", 3);
+		List<Attrezzo> ordinatoPerPeso = borsa.getContenutoOrdinatoPerPeso();
+		
+		ordinatoPerPeso.add(attrezzo);
+		ordinatoPerPeso.add(attrezzo2);
+
+		assertTrue(ordinatoPerPeso.contains(attrezzo));
+	    assertTrue(ordinatoPerPeso.contains(attrezzo2));
+	    assertEquals(2, ordinatoPerPeso.size());
+	}
+	
 }

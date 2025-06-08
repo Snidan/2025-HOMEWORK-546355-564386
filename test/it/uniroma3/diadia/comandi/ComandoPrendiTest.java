@@ -1,43 +1,47 @@
 package it.uniroma3.diadia.comandi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.io.FileNotFoundException;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import it.uniroma3.diadia.FormatoFileNonValidoException;
 import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.ambienti.Labirinto;
+import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-class ComandoPrendiTest {
-	Partita partita;
-	ComandoPrendi prendi;
+public class ComandoPrendiTest {
+	private Attrezzo a;
+	private ComandoPrendi comandoPrendi;
+	private Partita par;
+	private Stanza s;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		this.partita = new Partita();
-		this.prendi = new ComandoPrendi();
+	@Before
+	public void setUp() throws FileNotFoundException, FormatoFileNonValidoException {
+		a = new Attrezzo("nomeAttrezzo", 1);
+		comandoPrendi = new ComandoPrendi();
+		par = new Partita(Labirinto.newBuilder("labirinto.txt").getLabirinto());
+		s = new Stanza("stanza");
+		par.getLabirinto().setStanzaCorrente(s);
 	}
-
-	@Test
-	void testAttrezzoNonPresente() {
-	    prendi.setParametro("osso");
-	    prendi.esegui(this.partita);
-	 assertNull(this.partita.getLabirinto().getStanzaCorrente().getAttrezzo("osso"));
-	 assertNotNull(this.partita.getGiocatore().getBorsa().getAttrezzo("osso"));
-	}
-
-
-	@Test
-	void testUnAttrezzoPreso() {
-		Attrezzo a = new Attrezzo("anello", 1);
-		this.partita.getLabirinto().getStanzaCorrente().addAttrezzo(a);
-		this.prendi.setParametro("anello");
-		this.prendi.esegui(this.partita);
 	
-		assertNull(this.partita.getLabirinto().getStanzaCorrente().getAttrezzo(a.getNome()));
-		assertNotNull(this.partita.getGiocatore().getBorsa().getAttrezzo("anello"));
+	@Test
+	public void testNessunAttrezzoPreso() {
+		s.addAttrezzo(a);
+		comandoPrendi.setParametro("nomeAttrezzo");
+		comandoPrendi.esegui(par);
+		assertNull(par.getGiocatore().getBorsa().getAttrezzo("Inesistente"));
+	}
+
+	@Test
+	public void testAttrezzoPreso() {
+		s.addAttrezzo(a);
+		comandoPrendi.setParametro("nomeAttrezzo");
+		comandoPrendi.esegui(par);
+		assertNotNull(par.getGiocatore().getBorsa().getAttrezzo("nomeAttrezzo"));
 	}
 
 }

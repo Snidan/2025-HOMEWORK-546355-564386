@@ -1,32 +1,32 @@
 package it.uniroma3.diadia.ambienti;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import it.uniroma3.diadia.Partita;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-class StanzaBuiaTest {
-	StanzaBuia buia;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		this.buia = new StanzaBuia("polvere fatata");
-	}
+public class StanzaBuiaTest {
 
+	private StanzaBuia stanzaBuia;
+	private Attrezzo a;
+	
+	@Before
+	public void setUp() {
+       stanzaBuia = new StanzaBuia("stanzaBuia", "lampadina");
+       a = new Attrezzo("lampadina", 0);
+    }
+	
 	@Test
-	void testStanzaBuiaAttrezzoPresente() {
-		Attrezzo a = new Attrezzo("polvere fatata", 10);
-		this.buia.addAttrezzo(a);
-		assertEquals(this.buia.toString(), buia.getDescrizione());
+	public void testAttrezzoMancante() {
+		assertEquals("Qui c'è buio pesto", stanzaBuia.getDescrizione());
 	}
 	
 	@Test
-	void testStanzaBuiaAttrezzoMancante() {
-		assertNotEquals(buia.toString(), buia.getDescrizione());
+	public void testAttrezzoPresente() {
+		stanzaBuia.addAttrezzo(a);
+		assertEquals(stanzaBuia.toString(), stanzaBuia.getDescrizione());
 	}
-
 }

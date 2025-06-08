@@ -1,44 +1,49 @@
 package it.uniroma3.diadia.comandi;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.io.FileNotFoundException;
 
+import org.junit.Before;
+
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
+import it.uniroma3.diadia.FormatoFileNonValidoException;
 import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.ambienti.Labirinto;
+import it.uniroma3.diadia.ambienti.Stanza;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-class ComandoPosaTest {
+public class ComandoPosaTest {
 
-	ComandoPosa posa;
-	Partita partita;
-
-	@BeforeEach
-	void setUp() throws Exception {
-		this.posa = new ComandoPosa();
-		this.partita = new Partita();
-	}
-
-	@Test
-	void testAttrezzoNonPresente() {
-	    posa.setParametro("lanterna");
-	    posa.esegui(this.partita);
-
-	    // Verifica che l'attrezzo non sia nella stanza corrente (non è stato posato)
-	 assertNull(this.partita.getLabirinto().getStanzaCorrente().getAttrezzo("lanterna"));
-	}
-
-
-	@Test
-	void testUnAttrezzoPosato() {
-		Attrezzo a = new Attrezzo("osso", 1);
-		this.partita.getGiocatore().getBorsa().addAttrezzo(a);
-		this.posa.setParametro("osso");
-		this.posa.esegui(this.partita);
+	private Attrezzo a;
+	private ComandoPosa comandoPosa;
+	private Partita par;
+	private Stanza s;
 	
-		assertNotNull(this.partita.getLabirinto().getStanzaCorrente().getAttrezzo("osso"));
+	@Before
+	public void setUp() throws FileNotFoundException, FormatoFileNonValidoException {
+		a = new Attrezzo("nomeAttrezzo", 1);
+		comandoPosa = new ComandoPosa();
+		par = new Partita(Labirinto.newBuilder("labirinto.txt").getLabirinto());
+		s = new Stanza("stanza");
+		par.getLabirinto().setStanzaCorrente(s);
 	}
 
+	@Test
+	public void testNessunAttrezzoPosato() {
+		comandoPosa.setParametro("nomeAttrezzo");
+		comandoPosa.esegui(par);
+		assertNull(s.getAttrezzo("nomeAttrezzo"));
+	}
 
+	@Test
+	public void testAttrezzoPosato() {
+		par.getGiocatore().getBorsa().addAttrezzo(a);
+		comandoPosa.setParametro("nomeAttrezzo");
+		comandoPosa.esegui(par);
+		assertNotNull(s.getAttrezzo("nomeAttrezzo"));
+	}
 }

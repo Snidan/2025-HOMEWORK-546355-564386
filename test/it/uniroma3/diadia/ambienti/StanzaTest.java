@@ -1,63 +1,50 @@
 package it.uniroma3.diadia.ambienti;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-class StanzaTest {
-	Stanza ingresso;
-	Stanza salotto;
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		this.ingresso= new Stanza("ingresso");
-		this.salotto= new Stanza("salotto");
-	}
+public class StanzaTest {
 
 	@Test
-	public void testImpostaStanzaAdiacente() {
-		this.ingresso.impostaStanzaAdiacente("nord", salotto);
-		assertEquals(this.salotto, this.ingresso.getStanzaAdiacente("nord"));
+	public void testDtanzaVuota() {
+		Stanza vuota = new Stanza("vuota");
+		assertNull(vuota.getAttrezzo("inesistente"));
 	}
 	
 	@Test
-	public void testNessunaStanzaAdiacente() {
-		assertNull(this.salotto.getStanzaAdiacente("nord"));
+	public void testGetAttrezziPresente() {
+		Stanza stanza = new Stanza("nonvuota");
+		Attrezzo attrezzo = new Attrezzo("attrezzo", 0);
+		stanza.addAttrezzo(attrezzo);
+		assertNotNull(stanza.getAttrezzi());
 	}
 	
 	@Test
-	public void testAggiungiTreAttrezzi() {
-		Attrezzo osso = new Attrezzo("osso", 1);
-		Attrezzo cappello = new Attrezzo("cappello", 5);
-		Attrezzo biberon = new Attrezzo("biberon", 2);
-		
-		this.salotto.addAttrezzo(biberon);
-		this.salotto.addAttrezzo(cappello);
-		this.salotto.addAttrezzo(osso);
-		
-		assertEquals(biberon, this.salotto.getAttrezzo("biberon"));
-		assertEquals(osso, this.salotto.getAttrezzo("osso"));
-		assertEquals(cappello, this.salotto.getAttrezzo("cappello"));
+	public void testGetStanzaAdiacente() {
+		Stanza s1 = new Stanza("s1");
+		Stanza s2 = new Stanza("s2");
+		s1.impostaStanzaAdiacente(Direzione.valueOf("sud"), s2);
+		assertNotNull(s1.getStanzaAdiacente(Direzione.valueOf("sud")));
+	}
+	
+	@Test
+	public void testAddAttrezzo() {
+		Stanza stanza = new Stanza("stanza");
+		Attrezzo attrezzo = new Attrezzo("martello", 3);
+		stanza.addAttrezzo(attrezzo);
+		assertTrue(stanza.hasAttrezzo("martello"));
+	}
+	
+	@Test
+	public void testRemoveAttrezzo() {
+		Stanza stanza = new Stanza("stanza");
+		Attrezzo attrezzo = new Attrezzo("martello", 3);
+		stanza.addAttrezzo(attrezzo);
+		stanza.removeAttrezzo(attrezzo);
+		assertFalse(stanza.hasAttrezzo("martello"));
 	}
 
-	@Test
-	public void testRimuoviUnAttrezzo() {
-		Attrezzo biberon = new Attrezzo("biberon", 2);
-		
-		this.salotto.addAttrezzo(biberon);
-		assertEquals(biberon, this.salotto.getAttrezzo("biberon"));
-		
-		this.salotto.removeAttrezzo(biberon);
-		assertNull(this.salotto.getAttrezzo("biberon"));
-	}
-	
-	@Test
-	public void testStanzaVuota() {
-		assertNull(this.salotto.getAttrezzo("osso"));
-	}
-	
 }

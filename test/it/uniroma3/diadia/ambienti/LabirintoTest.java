@@ -1,32 +1,36 @@
 package it.uniroma3.diadia.ambienti;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.FileNotFoundException;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-class LabirintoTest {
-	Labirinto lab;
+import it.uniroma3.diadia.FormatoFileNonValidoException;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		this.lab = new Labirinto();
-		this.lab.creaStanze();
-	}
+public class LabirintoTest {
 
-	@Test
-	void testAtrioStanzaCorrente() {
-		assertEquals(this.lab.getStanzaCorrente().getNome(), "Atrio");
-	}
-	
-	@Test
-	public void testAtrioAdiacenzaEst() {
-		assertEquals(this.lab.getStanzaCorrente().getStanzaAdiacente("est").getNome(), "Aula N11");
+	private Labirinto labirinto;
+
+	@Before
+	public void setUp() throws FileNotFoundException, FormatoFileNonValidoException {
+	      this.labirinto = Labirinto.newBuilder("labirinto.txt").addStanzaIniziale("Atrio").addAttrezzo("osso", 1).addStanzaVincente("Biblioteca").addAdiacenza("Atrio", "Biblioteca", Direzione.valueOf("nord")).getLabirinto();
+
 	}
 	
 	@Test
-	public void testStanzaVincente() {
-		assertEquals(this.lab.getStanzaVincente().getNome(), "Biblioteca");
+	public void testGetStanzaCorrente() {
+		Stanza stanzaCorrente = new Stanza("Atrio");
+	
+		labirinto.setStanzaCorrente(stanzaCorrente);
+		assertEquals(stanzaCorrente, labirinto.getStanzaCorrente());
+	}
+	
+	@Test
+	public void testGetStanzaVincente() {
+		assertNotNull(labirinto.getStanzaVincente());
+		assertEquals("Biblioteca", labirinto.getStanzaVincente().getNome());
 	}
 
 }

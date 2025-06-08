@@ -1,38 +1,47 @@
 package it.uniroma3.diadia.ambienti;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import it.uniroma3.diadia.Partita;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-class StanzaBloccataTest {
+public class StanzaBloccataTest {
 
-	StanzaBloccata bloccata;
-	Partita partita;
+	private String passepartout = "chiave";
+	private StanzaBloccata stanzaBloccata;
+	private Stanza s2;
 	
-	@BeforeEach
-	void setUp() throws Exception {
-		this.bloccata = new StanzaBloccata("polvere fatata");
-		this.partita = new Partita();
+	 @Before
+	 public void setUp() {
+		stanzaBloccata = new StanzaBloccata("stanza", Direzione.valueOf("sud"), passepartout);
+		s2 = new Stanza("s2");
+		stanzaBloccata.impostaStanzaAdiacente(Direzione.valueOf("sud"), s2);
+	 }
+	
+	@Test
+	public void testGetStanzaAdiacenteBloccata() {
+		assertSame(stanzaBloccata, stanzaBloccata.getStanzaAdiacente(Direzione.valueOf("sud")));
+	}
+	
+	@Test
+	public void testGetStanzaAdiacenteSbloccata() {
+		Attrezzo a = new Attrezzo(passepartout, 0);
+		stanzaBloccata.addAttrezzo(a);
+		assertSame(s2, stanzaBloccata.getStanzaAdiacente(Direzione.valueOf("sud")));
 	}
 
 	@Test
-	void testStanzaBloccataAttrezzoMancante() {
-		assertNotEquals(this.bloccata.toString(), this.bloccata.getDescrizione());
-		assertNotEquals(this.bloccata.getStanzaAdiacente("est"), this.partita.getLabirinto().getStanzaCorrente().getStanzaAdiacente("est"));
+	public void testGetDescrizioneBloccata() {
+		String descrizioneBloccata = "Questa direzione è bloccata! Per sbloccarla devi posare l'attrezzo " + this.passepartout + " nella stanza";
+		assertEquals(descrizioneBloccata, stanzaBloccata.getDescrizione());
 	}
 	
 	@Test
-	void testStanzaBloccataAttrezzoPresente() {
-		Attrezzo a = new Attrezzo("polvere fatata", 5);
-		this.bloccata.addAttrezzo(a);
-		this.bloccata.impostaStanzaAdiacente("est", this.partita.getLabirinto().getStanzaCorrente().getStanzaAdiacente("est"));
-		assertEquals(this.bloccata.toString(), this.bloccata.getDescrizione());
-		assertEquals(this.bloccata.getStanzaAdiacente("est"), this.partita.getLabirinto().getStanzaCorrente().getStanzaAdiacente("est"));
-	}	
-	
+	public void testGetDescrizioneSbloccata() {
+		Attrezzo attrezzo = new Attrezzo(passepartout, 1);
+		stanzaBloccata.addAttrezzo(attrezzo);
+		assertEquals(stanzaBloccata.toString(), stanzaBloccata.getDescrizione());
+	}
 }
