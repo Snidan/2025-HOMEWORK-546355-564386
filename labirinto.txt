@@ -1,0 +1,11 @@
+Stanze: atrio, biblioteca, laboratorio
+Inizio: atrio
+Vincente: laboratorio
+Magica: laboratorio
+Buia: biblioteca torcia
+Bloccata: atrio nord chiave
+Mago: laboratorio Merlino "Benvenuto giovane mago" bacchetta
+Strega: biblioteca Morgana "Sono la strega dei libri"
+Cane: atrio Fido "Grrr, chi va là?"
+Attrezzi: torcia 1 biblioteca, chiave 1 atrio, bacchetta 1 laboratorio
+Uscite: atrio nord laboratorio, laboratorio sud atrio, atrio est biblioteca
