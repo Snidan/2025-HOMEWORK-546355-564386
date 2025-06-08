@@ -1,42 +1,43 @@
 package it.uniroma3.diadia.comandi;
 
+import it.uniroma3.diadia.IO;
 import it.uniroma3.diadia.Partita;
 import it.uniroma3.diadia.attrezzi.Attrezzo;
 
-public class ComandoPosa implements Comando{
+public class ComandoPosa implements Comando {
+	private String nomeAttrezzo;
+	private IO io;
 
-	String attrezzoPosato;
-	
-	public ComandoPosa() {}
-	
+	public ComandoPosa(){	
+	}
 	
 	@Override
 	public void esegui(Partita partita) {
-		// TODO Auto-generated method stub
-		Attrezzo a = partita.getGiocatore().getBorsa().getAttrezzo(attrezzoPosato);
+		Attrezzo a = partita.getGiocatore().getBorsa().getAttrezzo(this.nomeAttrezzo);
 		if(a!=null) {
-			partita.getLabirinto().getStanzaCorrente().addAttrezzo(a);
-			partita.getGiocatore().getBorsa().removeAttrezzo(attrezzoPosato);
-			System.out.println("\nHai preso l'attrezzo "+ a.getNome());
-		}
-		else {
-			System.out.println("\nQuest'attrezzo non è nella borsa!");
+		partita.getGiocatore().getBorsa().removeAttrezzo(this.nomeAttrezzo);
+		partita.getLabirinto().getStanzaCorrente().addAttrezzo(a);
 		}
 	}
 
 	@Override
-	public void setParametro(String attrezzo) {
-		this.attrezzoPosato = attrezzo;
+	public void setParametro(String parametro) {
+		this.nomeAttrezzo = parametro;
 	}
-	
-	@Override
-	public String getNome() {
-		return "posa";
-	}
-	
+
 	@Override
 	public String getParametro() {
-		return this.attrezzoPosato;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+	@Override
+	public String getNome() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setIo(IO io) {
+	      this.io = io;
+	   }
 }

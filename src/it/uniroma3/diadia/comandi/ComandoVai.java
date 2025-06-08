@@ -1,16 +1,14 @@
 package it.uniroma3.diadia.comandi;
 
+import it.uniroma3.diadia.IO;
 import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.ambienti.Direzione;
 import it.uniroma3.diadia.ambienti.Stanza;
 
-public class ComandoVai implements Comando{
+public class ComandoVai extends AbstractComando{
 
-	
-	/**
-	 * Cerca di andare in una direzione. Se c'e' una stanza ci entra 
-	 * e ne stampa il nome, altrimenti stampa un messaggio di errore
-	 */
-	private String direzione;
+	private Direzione direzione;
+	private IO io;
 
 	public ComandoVai() {
 	}
@@ -20,41 +18,34 @@ public class ComandoVai implements Comando{
 	 */
 	@Override
 	public void esegui(Partita partita) {
-		
-		// qui il codice per cambiare stanza ...
+
 		Stanza stanzaCorrente = partita.getLabirinto().getStanzaCorrente();
 		Stanza prossimaStanza = null;
-		
-		if(this.direzione==null) {
-			System.out.println("Dove vuoi andare? Devi specificare una direzione!");
-			return;
+
+		if(this.getParametro()==null){
+			io.mostraMessaggio("Dove vuoi andare? Devi specificare una direzione");
 		}
-		
-		prossimaStanza = stanzaCorrente.getStanzaAdiacente(this.direzione);
-		if (prossimaStanza == null) {
-			System.out.println("Direzione inesistente");
-			return;
+		if(this.getParametro()!=null) {
+			prossimaStanza = stanzaCorrente.getStanzaAdiacente(Direzione.valueOf(this.getParametro()));
+			if(prossimaStanza==null) {
+				io.mostraMessaggio("Direzione inesistente");
+				return;
+			}
 		}
-		else {
-			partita.getLabirinto().setStanzaCorrente(prossimaStanza);
-			int cfu = partita.getGiocatore().getCfu();
-			partita.getGiocatore().setCfu(--cfu);
-		}
-		System.out.println("\n"+partita.getLabirinto().getStanzaCorrente().getDescrizione());
+
+		partita.getLabirinto().setStanzaCorrente(prossimaStanza);
+		io.mostraMessaggio(partita.getLabirinto().getStanzaCorrente().getDescrizione());
+		io.mostraMessaggio(partita.getGiocatore().getBorsa().toString());
+		partita.getGiocatore().setCfu(partita.getGiocatore().getCfu()-1);
 	}
-	
-	@Override
-	public void setParametro(String parametro) {
-		this.direzione = parametro;
+
+
+	public void setIo(IO io) {
+		this.io = io;
 	}
-	
+
 	@Override
 	public String getNome() {
-		return "vai";
-	}
-	
-	@Override
-	public String getParametro() {
-		return this.direzione;
+		return null;
 	}
 }
